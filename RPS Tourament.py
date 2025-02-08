@@ -1,76 +1,79 @@
-import random
+#include <string>
+#include <iostream>
+using namespace std;
 
+string getComputerChoice() {
+    string choices[] = {"rock", "paper", "scissors"};
+    return choices[rand() % 3]; // Randomly pick one of the three choices
+}
 
-def get_computer_choice():
-    choices = {1: "rock", 2: "paper", 3: "scissors"}
-    return choices[random.randint(1, 3)]
+string getHumanChoice() {
+    string choice;
+    while (true) {
+        cout << "Enter rock, paper, scissors, or quit: ";
+        cin >> choice;
+        if (choice == "rock" || choice == "paper" || choice == "scissors" || choice == "quit") {
+            return choice;
+        }
+        cout << "Invalid input. Please try again.\n";
+    }
+}
 
+string determineWinner(string human, string computer) {
+    if (human == computer) {
+        return "draw";
+    } else if ((human == "rock" && computer == "scissors") || 
+               (human == "scissors" && computer == "paper") || 
+               (human == "paper" && computer == "rock")) {
+        return "human";
+    } else {
+        return "computer";
+    }
+}
 
-def get_human_choice():
-    valid_choices = ["rock", "paper", "scissors", "quit"]
-    while True:
-        choice = input("Enter rock, paper, scissors, or quit: ").lower()
-        if choice in valid_choices:
-            return choice
-        print("Invalid input. Please try again.")
+bool playRound(int &humanScore, int &computerScore) {
+    string computerChoice = getComputerChoice();
+    string humanChoice = getHumanChoice();
 
+    if (humanChoice == "quit") {
+        return false; // End game
+    }
 
-def determine_winner(human, computer):
-    if human == computer:
-        return "draw"
-    elif (human == "rock" and computer == "scissors") or \
-         (human == "scissors" and computer == "paper") or \
-         (human == "paper" and computer == "rock"):
-        return "human"
-    else:
-        return "computer"
+    cout << "Computer chose: " << computerChoice << endl;
+    string winner = determineWinner(humanChoice, computerChoice);
 
+    if (winner == "draw") {
+        cout << "This round is a draw!\n";
+    } else if (winner == "human") {
+        cout << "You win this round!\n";
+        humanScore++;
+    } else {
+        cout << "Computer wins this round!\n";
+        computerScore++;
+    }
 
-def play_round():
-    computer_choice = get_computer_choice()
-    human_choice = get_human_choice()
+    cout << "Score - You: " << humanScore << ", Computer: " << computerScore << "\n\n";
+    return true;
+}
 
-    if human_choice == "quit":
-        return None, None
+int main() {
+    srand(time(0)); // Seed random number generator
+    int humanScore = 0, computerScore = 0;
 
-    print(f"Computer chose: {computer_choice}")
-    winner = determine_winner(human_choice, computer_choice)
+    while (playRound(humanScore, computerScore)) {}
 
-    if winner == "draw":
-        print("This round is a draw!")
-        return 0, 0
-    elif winner == "human":
-        print("You win this round!")
-        return 1, 0
-    else:
-        print("Computer wins this round!")
-        return 0, 1
+    cout << "Tournament Over!\n";
+    cout << "Final Score - You: " << humanScore << ", Computer: " << computerScore << endl;
 
+    if (humanScore > computerScore) {
+        cout << "Congratulations! You won the tournament!\n";
+    } else if (computerScore > humanScore) {
+        cout << "Computer wins the tournament! Better luck next time!\n";
+    } else {
+        cout << "The tournament ended in a draw!\n";
+    }
 
-def main():
-    human_score, computer_score = 0, 0
+    return 0;
+}
 
-    while True:
-        human_points, computer_points = play_round()
-
-        if human_points is None:
-            break
-
-        human_score += human_points
-        computer_score += computer_points
-
-        print(f"Score - You: {human_score}, Computer: {computer_score}\n")
-
-    print("Tournament Over!")
-    print(f"Final Score - You: {human_score}, Computer: {computer_score}")
-
-    if human_score > computer_score:
-        print("Congratulations! You won the tournament!")
-    elif computer_score > human_score:
-        print("Computer wins the tournament! Better luck next time!")
-    else:
-        print("The tournament ended in a draw!")
-
-
-if __name__ == "__main__":
-    main()
+ 
